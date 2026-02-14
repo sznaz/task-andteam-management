@@ -1,4 +1,4 @@
-# 📚 Student Management System API
+# 📚 Team and Task Management System API
 
 A basic Student Management System built using:
 
@@ -13,7 +13,7 @@ A basic Student Management System built using:
 
 # 🚀 Base URL
 
-http://localhost:5000/api
+http://localhost:3000/api
 
 
 ---
@@ -33,8 +33,8 @@ http://localhost:5000/api
 
 ## 1️⃣ Clone Repository
 
-git clone https://github.com/sznaz/student-management-systm
-cd student-management-systm
+git clone https://github.com/sznaz/task-andteam-management.git
+cd task-andteam-management/server
 
 ## 2️⃣ Install Dependencies
 
@@ -56,7 +56,7 @@ npm run dev
 
 Server will start at:
 
-http://localhost:5000
+http://localhost:3000
 
 
 
@@ -90,6 +90,12 @@ src/
  ├── models/
  ├── middlewares/
  ├── config/
+ ├── utils/
  ├── app.ts
  └── server.ts
  └── types.ts
+
+
+
+
+# 📚 Task and Team Management Systmem UI
