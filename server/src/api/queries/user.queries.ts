@@ -1,0 +1,22 @@
+import { Service } from "typedi";
+import userModel, { IUserModel } from "../../models/user.model";
+
+@Service()
+class UserQueries {
+  public create = async (payload: Partial<IUserModel>): Promise<IUserModel> => {
+    return userModel.create(payload);
+  };
+
+  public findByEmail = async (email: string): Promise<IUserModel | null> => {
+    return userModel.findOne({ email }).select("+password").exec();
+  };
+
+  public findById = async (id: string): Promise<IUserModel | null> => {
+    return userModel.findById(id).exec();
+  };
+  public getAll = async (): Promise<IUserModel[]> => {
+    return userModel.find({role: 'user'}).exec();
+  };
+}
+
+export default UserQueries;
