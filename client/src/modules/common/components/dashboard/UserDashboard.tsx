@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../../core/interceptors/axios.interceptor";
 import StatCard from "../../../../components/statcard/StatCard";
 import { Grid } from "@mui/material";
+import { dashboardService } from "../../../admin/services/dashboard.service";
 
 interface UserStats {
   totalTasks: number;
@@ -18,10 +18,12 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const response = await axiosInstance.get(
-        "/api/dashboard/user"
-      );
-      setStats(response.data.data || response.data);
+      try {
+        const response = await dashboardService.getUserStat();
+        setStats(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchStats();
@@ -29,15 +31,15 @@ const UserDashboard = () => {
 
   return (
     <Grid container spacing={3} mt={1}>
-      <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <StatCard title="Total Tasks" value={stats.totalTasks} />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <StatCard title="Tasks Pending" value={stats.pendingTasks} />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
         <StatCard title="Tasks Completed" value={stats.completedTasks} />
       </Grid>
     </Grid>

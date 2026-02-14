@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../../core/interceptors/axios.interceptor";
 import { teamService } from "../../services/team.service";
+import { userService } from "../../services/user.service";
 
 interface User {
   _id: string;
@@ -31,8 +31,12 @@ const CreateTeamPage = () => {
   // Fetch all users for member selection
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await axiosInstance.get("/api/users");
-      setUsers(response.data.data || response.data);
+      try {
+        const response = await userService.getAllUsers();
+        setUsers(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchUsers();
@@ -102,7 +106,13 @@ const CreateTeamPage = () => {
           </Select>
         </FormControl>
 
-        <Button type="submit" variant="contained" sx={{ mt: 2 }} disabled={loading} fullWidth>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ mt: 2 }}
+          disabled={loading}
+          fullWidth
+        >
           {loading ? "Creating..." : "Create Team"}
         </Button>
       </Box>

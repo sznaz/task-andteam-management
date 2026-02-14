@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../../core/interceptors/axios.interceptor";
 import { taskService } from "../../services/task.service";
+import { teamService } from "../../../admin/services/team.service";
 
 interface Team {
   _id: string;
@@ -40,8 +40,12 @@ const CreateTaskPage = () => {
   // Fetch Teams
   useEffect(() => {
     const fetchTeams = async () => {
-      const response = await axiosInstance.get("/api/teams");
-      setTeams(response.data.data || response.data);
+      try {
+        const response = await teamService.getAllTeams();
+        setTeams(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchTeams();
@@ -53,9 +57,7 @@ const CreateTaskPage = () => {
     setTeamMembers(team?.members || []);
   }, [selectedTeam, teams]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -85,12 +87,17 @@ const CreateTaskPage = () => {
   };
 
   return (
-    <Box  className="flex flex-col items-center justify-center">
-      <Typography maxWidth={600} variant="h4"  gutterBottom>
+    <Box className="flex flex-col items-center justify-center">
+      <Typography maxWidth={600} variant="h4" gutterBottom>
         Create Task
       </Typography>
 
-      <Box component="form" maxWidth={600} className="flex w-full flex-col justify-center items-center" onSubmit={handleSubmit}>
+      <Box
+        component="form"
+        maxWidth={600}
+        className="flex w-full flex-col justify-center items-center"
+        onSubmit={handleSubmit}
+      >
         <TextField
           fullWidth
           label="Title"
@@ -117,9 +124,7 @@ const CreateTaskPage = () => {
           <Select
             value={selectedTeam}
             label="Team"
-            onChange={(e) =>
-              setSelectedTeam(e.target.value)
-            }
+            onChange={(e) => setSelectedTeam(e.target.value)}
           >
             {teams.map((team) => (
               <MenuItem key={team._id} value={team._id}>
