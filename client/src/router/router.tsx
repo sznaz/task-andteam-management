@@ -1,46 +1,76 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "../modules/auth/pages/login/LoginPage";
-import Register from "../modules/auth/pages/register/RegisterPage";
-import NotFound from "../modules/common/pages/notfound/NotFoundPage";
+import { Suspense, lazy } from "react";
 import ProtectedRoute from "../core/guards/protectedroute";
 import AdminRoute from "../core/guards/adminroute";
 import DashboardLayout from "../shared/layouts/DashboardLayout";
-import DashboardHome from "../modules/common/pages/dashboard/DashboardPage";
-import TeamsPage from "../modules/admin/pages/teams/TeamsPage";
-import CreateTaskPage from "../modules/common/pages/createtask/CreateTask";
-import TasksPage from "../modules/common/pages/tasks/TasksPage";
-import CreateTeamPage from "../modules/admin/pages/createteam/CreateTeams";
+import { Box, CircularProgress } from "@mui/material";
+
+const Login = lazy(() => import("../modules/auth/pages/login/LoginPage"));
+
+const Register = lazy(
+  () => import("../modules/auth/pages/register/RegisterPage")
+);
+
+const NotFound = lazy(
+  () => import("../modules/common/pages/notfound/NotFoundPage")
+);
+
+const DashboardHome = lazy(
+  () => import("../modules/common/pages/dashboard/DashboardPage")
+);
+
+const TeamsPage = lazy(() => import("../modules/admin/pages/teams/TeamsPage"));
+
+const CreateTeamPage = lazy(
+  () => import("../modules/admin/pages/createteam/CreateTeams")
+);
+
+const TasksPage = lazy(() => import("../modules/common/pages/tasks/TasksPage"));
+
+const CreateTaskPage = lazy(
+  () => import("../modules/common/pages/createtask/CreateTask")
+);
 
 const AppRouter = () => {
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <Suspense
+      fallback={
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <CircularProgress />
+        </Box>
+      }
+    >
+      <Routes>
+        {/* Public */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      {/* Protected */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardHome />} />
+        {/* Protected */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardHome />} />
 
-          {/* Admin Only Routes */}
-          <Route element={<AdminRoute />}>
-            <Route path="teams" element={<TeamsPage />} />
-            <Route
-              path="teams/create"
-              element={<CreateTeamPage />}
-            />
+            {/* Admin Only */}
+            <Route element={<AdminRoute />}>
+              <Route path="teams" element={<TeamsPage />} />
+              <Route path="teams/create" element={<CreateTeamPage />} />
+            </Route>
+
+            {/* Shared */}
+            <Route path="tasks" element={<TasksPage />} />
+            <Route path="create-task" element={<CreateTaskPage />} />
           </Route>
-
-          {/* Accessible to all logged users */}
-          <Route path="tasks" element={<TasksPage />} />
-          <Route path="create-task" element={<CreateTaskPage />} />
         </Route>
-      </Route>
 
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
